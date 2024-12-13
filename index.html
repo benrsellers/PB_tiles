@@ -41,7 +41,7 @@
 
         // Base layers
         //  .. OpenStreetMap
-        var osm = L.tileLayer('https://{s}.tile.osm.org/{z}/{x}/{y}.png', {attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors', minZoom: 15, maxZoom: 20});
+        var osm = L.tileLayer('https://{s}.tile.osm.org/{z}/{x}/{y}.png', {attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors', minZoom: 0, maxZoom: 20});
 
         //  .. CartoDB Positron
         var cartodb = L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png', {attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, &copy; <a href="http://cartodb.com/attributions">CartoDB</a>', minZoom: 15, maxZoom: 20});
@@ -56,8 +56,8 @@
         var map = L.map('map', {
             crs: L.CRS.EPSG3857,
             center: [43.119146782347485, -89.4843506169757],
-            zoom: 16,
-            minZoom: 15,
+            zoom: 0,
+            minZoom: 0,
             maxZoom: 20,
             layers: [osm]
         });
