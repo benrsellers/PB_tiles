@@ -80,15 +80,7 @@
 
         // Add base layers
         L.control.layers(basemaps, overlaymaps, {collapsed: false}).addTo(map);
-        // Center the map dynamically to the bounds of the `lyr`
-        lyr.on('load', function() {
-                // This part sets the bounds once the layer has loaded
-                var bounds = lyr.getBounds();
-                map.fitBounds(bounds);
-            });
-
-        // Add the overlay layer to the map
-        lyr.addTo(map);
+        
         // Fit to overlay bounds (SW and NE points with (lat, lon))
         //map.fitBounds([[43.11749854625932, -89.48313687183997], [43.12079501843564, -89.48556436211143]]);
 
