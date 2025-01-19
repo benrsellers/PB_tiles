@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no' />
+    <title>PheasantBranch_RGB_3857.tif</title>
+
+    <!-- Leaflet -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.2/dist/leaflet.css" integrity="sha256-sA+zWATbFveLLNqWO2gtiw3HL/lh1giY/Inf1BJ0z14=" crossorigin="" />
+    <script src="https://unpkg.com/leaflet@1.9.2/dist/leaflet.js" integrity="sha256-o9N1jGDZrf5tS+Ft4gbIK7mYMipq9lqpVJ91xHSyKhg=" crossorigin=""></script>
+
+    <style>
+        body { margin:0; padding:0; }
+        #map { position:absolute; top:0; bottom:0; width:100%; }
+        .legend {
+            background-color: white;
+            padding: 10px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            flex-direction: column;
+        }
+        .legend .color-bar {
+            width: 20px;
+            height: 200px;
+            background: linear-gradient(to top, 
+                #30123b, #35abf8, #69fd66, #f8be39, #b71d02
+            ); /* Custom color ramp from dark purple to red */
+            margin-top: 10px;
+            position: relative;
+        }
+        .legend .value-labels {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            margin-top: 5px;
+            width: 100%;
+        }
+        .legend .color-bar-labels {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+        }
+        .legend .color-bar-labels span {
+            text-align: center;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+
+<div id="map"></div>
+
+<script>
+/* **** Leaflet **** */
+
+// Base layers
+var osm = L.tileLayer('https://{s}.tile.osm.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors',
+    minZoom: 0,
+    maxZoom: 20
+});
+
+// ESRI Imagery
+var esriImagery = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+    attribution: 'Tiles &copy; Esri &mdash; Source: Esri, Maxar, Earthstar Geographics, and the GIS User Community',
+    minZoom: 0,
+    maxZoom: 20
+});
+
+// Map Initialization
+var map = L.map('map', {
+    crs: L.CRS.EPSG3857,
+    center: [43.119998, -89.483995],
+    zoom: 18,
+    minZoom: 5,
+    maxZoom: 21,
+    layers: [osm] // Base layer only
+});
+
+// Layer Control
+var basemaps = {"OpenStreetMap": osm, "Public Imagery": esriImagery};
+L.control.layers(basemaps, {}, {collapsed: false}).addTo(map);
+
+// Title
+var title = L.control();
+title.onAdd = function(map) {
+    this._div = L.DomUtil.create('div', 'ctl title');
+    this.update();
+    return this._div;
+};
+title.update = function() {
+    this._div.innerHTML = "Pheasant Branch Imagery Example";
+};
+title.addTo(map);
+
+// Color Bar Legend
+var legend = L.control({position: 'bottomleft'});
+
+legend.onAdd = function(map) {
+    var div = L.DomUtil.create('div', 'legend');
+    div.innerHTML += '<h4>Elevations</h4>';
+
+    // Adding the labels and color bar between them
+    div.innerHTML += '<div style="display: flex; flex-direction: column; align-items: center;">';
+
+    // Low label
+    div.innerHTML += '<span style="text-align: center;">Low</span>';
+    
+    // Color bar
+    div.innerHTML += '<div class="color-bar"></div>';
+    
+    // High label
+    div.innerHTML += '</div>';
+
+    div.innerHTML += '<span style="text-align: center;">High</span>';
+
+    div.innerHTML += '</div>';
+
+    return div;
+};
+
+legend.addTo(map);
+
+</script>
+
+</body>
+</html>
