@@ -99,7 +99,13 @@
             maxZoom: 20,
             layers: [lyr, dem, esriImagery]
         });        
-
+// Add a scale bar to the map
+        L.control.scale({
+            position: 'bottomright',  // Position on the map
+            metric: true,            // Show metric scale (meters)
+            imperial: false,         // Hide imperial scale (feet)
+            maxWidth: 200            // Maximum width for the scale bar
+        }).addTo(map);
         var basemaps = {"OpenStreetMap": osm, "Public Imagery": esriImagery};
         var overlaymaps = {"Shrub Classification Model": shrub, "Surface Elevation Model":dem,"Drone Orthomosaic": lyr};
 
