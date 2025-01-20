@@ -86,8 +86,9 @@
     });
         // Overlay layers (TMS)
         // var lyr = L.tileLayer('https://benrsellers.github.io/PB_tiles/tiles/{z}/{x}/{y}.png', {tms:false, opacity: 1, attribution: "", minZoom: 15, maxZoom: 20});
-        var lyr = L.tileLayer('https://hub.dronedb.app/orgs/benrsellers/ds/pheasantbranch/tiles/{z}/{x}/{y}.png?path=test.tif', {tms:false, opacity: 1, attribution: "", minZoom: 10, maxZoom: 20});
-        var dem = L.tileLayer('https://hub.dronedb.app/orgs/benrsellers/ds/pheasantbranch/tiles/{z}/{x}/{y}.png?path=FinalDEMforWebMap.tif', {tms:false, opacity: 1, attribution: "", minZoom: 10, maxZoom: 20});
+        var lyr = L.tileLayer('https://hub.dronedb.app/orgs/benrsellers/ds/pheasantbranch/tiles/{z}/{x}/{y}.png?path=FinalOrthoforWebMap_clip.tif', {tms:false, opacity: 1, attribution: "", minZoom: 10, maxZoom: 20});
+        var dem = L.tileLayer('https://hub.dronedb.app/orgs/benrsellers/ds/pheasantbranch/tiles/{z}/{x}/{y}.png?path=FinalDEMforWebMap_clip.tif', {tms:false, opacity: 1, attribution: "", minZoom: 10, maxZoom: 20});
+        var shrub = L.tileLayer('https://hub.dronedb.app/orgs/benrsellers/ds/pheasantbranch/tiles/{z}/{x}/{y}.png?path=shrub_monitoringarea_clip2.tif', {tms:false, opacity: 1, attribution: "", minZoom: 10, maxZoom: 20});
 
         // Map
         var map = L.map('map', {
@@ -100,7 +101,7 @@
         });        
 
         var basemaps = {"OpenStreetMap": osm, "Public Imagery": esriImagery};
-        var overlaymaps = {"DEM":dem,"Drone Orthomosic": lyr};
+        var overlaymaps = {"Shrub Classification Model": shrub, "Surface Elevation Model":dem,"Drone Orthomosaic": lyr};
 
         // Title
         var title = L.control();
@@ -126,7 +127,7 @@
             //div.innerHTML += '<h4>Elevations</h4>';
 
             // Adding the labels and color bar between them
-            div.innerHTML += '<div style="display: flex; flex-direction: column; align-items: center;">';
+            div.innerHTML += '<div style="display: flex; flex-direction: column; align-items: center;"><strong>Elevation Model</strong>';
 
             // Low label
             div.innerHTML += '<span style="text-align: center;">High</span>';
@@ -145,6 +146,83 @@
         };
 
         legend.addTo(map);
+        // Second Legend for Monitoring Area
+        var monitoringLegend = L.control({ position: 'topright' }); // Adjust position as needed
+
+        monitoringLegend.onAdd = function (map) {
+            var div = L.DomUtil.create('div', 'legend monitoring-area');
+            //div.style.border = '2px solid red';
+            div.style.padding = '10px';
+            div.style.borderRadius = '5px';
+            div.style.backgroundColor = 'rgba(255, 255, 255, 0.9)';
+            div.style.boxShadow = '0 0 10px rgba(0, 0, 0, 0.2)';
+            div.style.textAlign = 'left'; 
+            div.style.display = 'flex';
+            div.style.flexDirection = 'column'; // Stack the items vertically
+            div.style.alignItems = 'flex-start';// Align content to the left
+            
+            // Title
+            div.innerHTML += '<div style="display: flex; flex-direction: column; align-items: center;"><strong>Shrub Classification</strong>';
+            
+            // Add the outline box for Monitoring Area
+            div.innerHTML += `
+                <div style="display: flex; align-items: center; margin-top: 5px;">
+                    <div style="
+                        width: 20px;
+                        height: 20px;
+                        border: 2px solid red; /* Red border */
+                        background-color: transparent; /* No fill */
+                        margin-right: 5px;
+                    "></div>
+                    <span>Monitoring Area</span>
+                </div>
+            `;
+            
+            // Add the orange box for Shrubs
+            div.innerHTML += `
+                <div style="display: flex; align-items: center; margin-top: 5px;">
+                    <div style="
+                        width: 20px;
+                        height: 20px;
+                        background-color: rgba(255, 165, 0, 0.7); /* Orange fill */
+                        border: 2px solid orange; /* Orange border */
+                        margin-right: 5px;
+                    "></div>
+                    <span>Shrubs       </span>
+                </div>
+            `;
+            
+            // Add the grey box for Non-Shrubs
+            div.innerHTML += `
+                <div style="display: flex; align-items: center; margin-top: 5px;">
+                    <div style="
+                        width: 20px;
+                        height: 20px;
+                        background-color: rgba(128, 128, 128, 0.7); /* Grey fill */
+                        border: 2px solid grey; /* Grey border */
+                        margin-right: 5px;
+                    "></div>
+                    <span>Non-Shrubs</span>
+                </div>
+            `;
+            
+            // Add the Percent Cover for shrubs
+            div.innerHTML += `
+                <div style="display: flex; align-items: center; margin-top: 5px;">
+                    <div style="
+                        width: 20px;
+                        height: 20px;
+                        margin-right: 5px;
+                    "></div>
+                    <strong>Shrub % Cover: 22.5%</strong>
+                </div>
+            `;
+            
+            return div;
+        };
+        
+        
+        monitoringLegend.addTo(map);
         // Fit to overlay bounds (SW and NE points with (lat, lon))
         //map.fitBounds([[43.11749854625932, -89.48313687183997], [43.12079501843564, -89.48556436211143]]);
 
