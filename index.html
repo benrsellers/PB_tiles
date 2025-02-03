@@ -89,6 +89,7 @@
         var lyr = L.tileLayer('https://hub.dronedb.app/orgs/benrsellers/ds/pheasantbranch/tiles/{z}/{x}/{y}.png?path=FinalOrthoforWebMap_clip.tif', {tms:false, opacity: 1, attribution: "", minZoom: 10, maxZoom: 20});
         var dem = L.tileLayer('https://hub.dronedb.app/orgs/benrsellers/ds/pheasantbranch/tiles/{z}/{x}/{y}.png?path=FinalDEMforWebMap_clip.tif', {tms:false, opacity: 1, attribution: "", minZoom: 10, maxZoom: 20});
         var shrub = L.tileLayer('https://hub.dronedb.app/orgs/benrsellers/ds/pheasantbranch/tiles/{z}/{x}/{y}.png?path=shrub_monitoringarea_clip2.tif', {tms:false, opacity: 1, attribution: "", minZoom: 10, maxZoom: 20});
+        var classification = L.tileLayer('https://hub.dronedb.app/orgs/benrsellers/ds/pheasantbranch/tiles/{z}/{x}/{y}.png?path=PB_classification_web_clip.tif', {tms:false, opacity: 1, attribution: "", minZoom: 10, maxZoom: 20});
 
         // Map
         var map = L.map('map', {
@@ -107,7 +108,7 @@
             maxWidth: 200            // Maximum width for the scale bar
         }).addTo(map);
         var basemaps = {"OpenStreetMap": osm, "Public Imagery": esriImagery};
-        var overlaymaps = {"Shrub Classification Model": shrub, "Surface Elevation Model":dem,"Drone Orthomosaic": lyr};
+        var overlaymaps = {"Vegetation Classification": classification, "Shrub Classification Model": shrub, "Surface Elevation Model":dem,"Drone Orthomosaic": lyr};
 
         // Title
         var title = L.control();
@@ -227,8 +228,125 @@
             return div;
         };
         
-        
         monitoringLegend.addTo(map);
+
+         // Thrid Legend for Veg Classification Area
+         var classificationLegend = L.control({ position: 'topright' }); // Adjust position as needed
+
+         classificationLegend.onAdd = function (map) {
+             var div = L.DomUtil.create('div', 'legend monitoring-area');
+             //div.style.border = '2px solid red';
+             div.style.padding = '10px';
+             div.style.borderRadius = '5px';
+             div.style.backgroundColor = 'rgba(255, 255, 255, 0.9)';
+             div.style.boxShadow = '0 0 10px rgba(0, 0, 0, 0.2)';
+             div.style.textAlign = 'left'; 
+             div.style.display = 'flex';
+             div.style.flexDirection = 'column'; // Stack the items vertically
+             div.style.alignItems = 'flex-start';// Align content to the left
+             
+             // Title
+             div.innerHTML += '<div style="display: flex; flex-direction: column; align-items: center;"><strong>Vegetation Classification</strong>';
+             
+             // Add the outline box for Monitoring Area
+             div.innerHTML += `
+                 <div style="display: flex; align-items: center; margin-top: 5px;">
+                     <div style="
+                         width: 20px;
+                         height: 20px;
+                         background-color: rgba(23, 85, 251, 0.7); /* Orange fill */
+                         border: 2px solid blue; /* Orange border */
+                         margin-right: 5px;
+                     "></div>
+                     <span>Water       </span>
+                 </div>
+             `;
+             
+             // Add the orange box for Shrubs
+             div.innerHTML += `
+                 <div style="display: flex; align-items: center; margin-top: 5px;">
+                     <div style="
+                         width: 20px;
+                         height: 20px;
+                         background-color: rgba(120, 46, 18, 0.7); /* Orange fill */
+                         border: 2px solid brown; /* Orange border */
+                         margin-right: 5px;
+                     "></div>
+                     <span>Shrubs       </span>
+                 </div>
+             `;
+             
+             // Add the grey box for Sedge/Grass 
+             div.innerHTML += `
+                 <div style="display: flex; align-items: center; margin-top: 5px;">
+                     <div style="
+                         width: 20px;
+                         height: 20px;
+                         background-color: rgba(93, 221, 100, 0.7); /* Grey fill */
+                         border: 2px solid green; /* Grey border */
+                         margin-right: 5px;
+                     "></div>
+                     <span>Sedge/Grass Dominated</span>
+                 </div>
+             `;
+
+             // Add the grey box for Emergent Veg
+             div.innerHTML += `
+                 <div style="display: flex; align-items: center; margin-top: 5px;">
+                     <div style="
+                         width: 20px;
+                         height: 20px;
+                         background-color: rgba(255, 255, 115, 0.7); /* Grey fill */
+                         border: 2px solid yellow; /* Grey border */
+                         margin-right: 5px;
+                     "></div>
+                     <span>Emergent Vegetation</span>
+                 </div>
+             `;
+            // Add the grey box for Sedge/Grass 
+             div.innerHTML += `
+             <div style="display: flex; align-items: center; margin-top: 5px;">
+                <div style="
+                    width: 20px;
+                    height: 20px;
+                    background-color: rgba(251, 185, 56, 0.7); /* Grey fill */
+                    border: 2px solid orange; /* Grey border */
+                    margin-right: 5px;
+                "></div>
+                <span>Cattail and Wild Rice</span>
+             </div>
+             `;
+            // Add the red box for Cat tails, burr reed, river bulrush
+             div.innerHTML += `
+             <div style="display: flex; align-items: center; margin-top: 5px;">
+               <div style="
+                   width: 20px;
+                   height: 20px;
+                   background-color: rgba(239, 60, 63, 0.7); /* Grey fill */
+                   border: 2px solid red; /* Grey border */
+                   margin-right: 5px;
+               "></div>
+               <span>Cattail, River Bulrush, Burr Reed</span>
+             </div>
+             `;
+
+             // Add the red box for flooded Cat tails
+             div.innerHTML += `
+             <div style="display: flex; align-items: center; margin-top: 5px;">
+               <div style="
+                   width: 20px;
+                   height: 20px;
+                   background-color: rgba(35, 177, 178, 0.7); /* Grey fill */
+                   border: 2px solid turquoise; /* Grey border */
+                   margin-right: 5px;
+               "></div>
+               <span>Flooded Cattail</span>
+             </div>
+             `;
+             return div;
+         };
+         
+         classificationLegend.addTo(map);
         // Fit to overlay bounds (SW and NE points with (lat, lon))
         //map.fitBounds([[43.11749854625932, -89.48313687183997], [43.12079501843564, -89.48556436211143]]);
 
